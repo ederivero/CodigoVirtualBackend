@@ -76,10 +76,59 @@ edad_min = 18
     # numero += 1
 
 # pass => pasa la iteracion y no hace nada pero el beneficio es que no emite un error de bloque de identacion
-numeros = [1,2,3,4,5]
-for numero in numeros:
-    pass
-print('adios')
+# numeros = [1,2,3,4,5]
+# for numero in numeros:
+#     pass
+# print('adios')
 
 
 # Ingresar su nombre y que diga cuantas vocales hay 
+# Silvia
+# cad=input('Ingrese una Cadena de Texo: ')
+# voc = 0
+# for c in cad:
+#     if c in "aeiouAEIOU":
+#         voc = voc + 1
+# print('El número de vocales en la Cadena de Texto es: ', voc)
+
+# cad=str(input('Ingrese una Cadena de Texto: '))
+# voc=0
+# for i in range(0, len(cad)):
+#     if cad[i] =='a' or cad[i] =='A' or cad[i] =='e' or cad[i] =='E' or cad[i] =='i' or cad[i] =='I' or cad[i] =='o' or cad[i] =='O' or cad[i] =='u' or cad[i] =='U':
+#         voc=voc+1           
+# print('El número de vocales en la Cadena de Texto es: ', voc)
+
+# Moises
+# elegidas = ['a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', 'U']
+# nombre = input('Ingrese su nombre: ')
+# contador = 0
+# for letra in elegidas:
+#     vocals = nombre.count(letra)
+#     contador = contador + vocals
+# print(contador)
+
+# Fernando
+# nombre=input("ingrese nombre")
+# vocales="aeiouAEIOU"
+# cantidad=0
+# for letra in nombre:
+#     for vocal in vocales:
+#         if letra==vocal:
+#             cantidad=cantidad+1
+# if cantidad==1:
+#     print("el nombre ",nombre," tiene ",cantidad," vocal")
+# elif cantidad==0: 
+#     print("el nombre ",nombre," no tiene vocales")
+# else:
+#     print("el nombre ",nombre," tiene ",cantidad," vocales")
+
+# Eduardo
+# nombre = input("Ingrese un nombre")
+# vocales=['a','e','i','o','u','A','E','I','O','U']
+# contador = 0
+# for letra in nombre:
+#     for vocal in vocales:
+#         if letra == vocal:
+#             contador += 1
+#             break
+# print('El nombre ingresado tiene {} vocales'.format(contador))
