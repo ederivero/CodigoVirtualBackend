@@ -28,6 +28,7 @@ def categorias():
         return jsonify({"ok":True,
         "content":data,
         "message": None})
+        
     if request.method == 'POST':
         data = request.get_json()
         cur = mysql.connection.cursor()
