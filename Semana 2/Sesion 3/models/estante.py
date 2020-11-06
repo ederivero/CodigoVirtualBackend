@@ -26,3 +26,5 @@ class EstanteModel(db.Model):
             'ubicacion':self.ubicacion,
             'descripcion': self.descripcion
         }
+    def __str__(self):
+        return '%s, %s, %s'%(self.id, self.capacidad, self.ubicacion)

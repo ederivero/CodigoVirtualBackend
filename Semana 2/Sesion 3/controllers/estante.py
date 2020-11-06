@@ -23,8 +23,16 @@ class EstanteController(Resource):
     )
     def get(self):
         estantes = EstanteModel.query.all()
-        print(estantes)
-        return 'Ok'
+        # print(estantes)
+        resultado = []
+        for estante in estantes:
+            # print(estante)
+            resultado.append(estante.mostrar_json())
+        return {
+            'ok':True,
+            'content': resultado,
+            'message': None
+        }
     
     def post(self):
         data = self.parser.parse_args()
