@@ -4,7 +4,7 @@ from flask_restful import Api
 # pip install flask-sqlalchemy
 from base_datos import db
 # from models.estante import EstanteModel
-from controllers.estante import EstanteController
+from controllers.estante import EstantesController, EstanteController
 from models.autor import AutorModel
 from models.libro import LibroModel
 from models.autorlibro import AutorLibroModel
@@ -28,6 +28,8 @@ def inicio():
     return 'El servidor funciona correctamente'
 
 # DEFINIR MIS RUTAS
-api.add_resource(EstanteController,'/estante')
+api.add_resource(EstantesController,'/estante')
+api.add_resource(EstanteController, '/estante/<int:est_id>')
+
 if __name__ == '__main__':
     app.run(debug=True)

@@ -1,7 +1,7 @@
 from flask_restful import Resource, reqparse
 from models.estante import EstanteModel
 # @app.route("/estante",methods=["get","post"])
-class EstanteController(Resource):
+class EstantesController(Resource):
     parser = reqparse.RequestParser()
     parser.add_argument(
         "capacidad",
@@ -50,3 +50,13 @@ class EstanteController(Resource):
                 'ok':False,
                 'message':'No se pudo guardar el estante en la bd'
             },500
+
+class EstanteController(Resource):
+    def get(self, est_id):
+        estante = EstanteModel.query.filter_by(id=est_id).first()
+        print(estante)
+        return {
+            'ok':True,
+            'content':estante.mostrar_json(),
+            'message': 'Todo bien'
+        }
