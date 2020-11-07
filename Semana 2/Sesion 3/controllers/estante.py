@@ -54,9 +54,55 @@ class EstantesController(Resource):
 class EstanteController(Resource):
     def get(self, est_id):
         estante = EstanteModel.query.filter_by(id=est_id).first()
-        print(estante)
-        return {
-            'ok':True,
-            'content':estante.mostrar_json(),
-            'message': 'Todo bien'
-        }
+        # print(estante)
+        if estante:
+            return {
+                'ok':True,
+                'content':estante.mostrar_json(),
+                'message': None
+            }
+        else:
+            return {
+                'ok': False,
+                'content': None,
+                'message': 'No existe el estante con id: '+str(est_id)
+            }, 404
+    def put(self, est_id):
+        estante = EstanteModel.query.filter_by(id=est_id).first()
+        if estante:
+            parser = reqparse.RequestParser()
+            parser.add_argument(
+                "capacidad",
+                type=int,
+                required=True,
+                help="Falta la capacidad del estante"
+            )
+            parser.add_argument(
+                "ubicacion",
+                type=str,
+                required=True,
+                help="Falta la ubicacion del estante"
+            )
+            parser.add_argument(
+                "descripcion",
+                type=str,
+                required=True,
+                help="Falta la descripcion"
+            )
+            data = parser.parse_args()
+            estante.capacidad= data['capacidad']
+            estante.ubicacion= data['ubicacion']
+            estante.descripcion= data['descripcion']
+            estante.guardar_bd()
+
+            return {
+                'ok':True,
+                'content':estante.mostrar_json(),
+                'message': None
+            }
+        else:
+            return {
+                'ok': False,
+                'content': None,
+                'message': 'No existe el estante con id: '+str(est_id)
+            }, 404
