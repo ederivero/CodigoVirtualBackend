@@ -12,6 +12,7 @@ class LibroModel(db.Model):
     # RELACIONES
     est_id = db.Column(db.Integer, db.ForeignKey('t_estante.est_id'), nullable=False)
     autores = db.relationship('AutorLibroModel', backref='libro')
+    # estante = db.relationship('EstanteModel', backref='libroEstante')
 
     def __init__(self, nombre, editorial, numpaginas, precio, publicacion, codigo, estante, estado):
         self.nombre = nombre
@@ -22,3 +23,21 @@ class LibroModel(db.Model):
         self.codigo = codigo 
         self.est_id = estante
         self.estado = estado
+
+    def guardar_bd(self):
+        db.session.add(self)
+        db.session.commit()
+
+    def mostrar_json(self):
+        return {
+            'id':self.id,
+            'nombre':self.nombre,
+            'editorial': self.editorial,
+            'num_paginas': self.numpaginas,
+            'precio':float(self.precio),
+            'publicacion':self.publicacion,
+            'codigo':self.codigo,
+            'estante':self.est_id,
+            'estado':self.estado
+        }
+

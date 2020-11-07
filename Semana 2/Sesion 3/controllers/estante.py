@@ -32,8 +32,14 @@ class EstantesController(Resource):
         # print(estantes)
         resultado = []
         for estante in estantes:
-            # print(estante)
-            resultado.append(estante.mostrar_json())
+            print(estante.libros)
+            libros=[]
+            for libro in estante.libros:
+                print(libro.mostrar_json())
+                libros.append(libro.mostrar_json())
+            temporal = estante.mostrar_json()
+            temporal['libros'] = libros
+            resultado.append(temporal)
         return {
             'ok':True,
             'content': resultado,
@@ -60,7 +66,7 @@ class EstantesController(Resource):
 class EstanteController(Resource):
     def get(self, est_id):
         estante = EstanteModel.query.filter_by(id=est_id).first()
-        # print(estante)
+        print(estante.libros)
         if estante:
             return {
                 'ok':True,
