@@ -202,3 +202,22 @@ class LibroController(Resource):
                 'content':None,
                 'message':'No existe el libro'
             }, 400
+
+class EncontrarLibroController(Resource):
+    def get(self, palabra):
+        resultado = LibroModel.query.filter(LibroModel.nombre.like('%'+palabra+'%')).all()
+        if resultado:
+            respuesta = []
+            for libro in resultado:
+                respuesta.append(libro.mostrar_json())
+            return{
+                'Ok':True,
+                'content':respuesta,
+                'message':''
+            }
+        else:
+            return{
+                'Ok':False,
+                'content':None,
+                'message':'No se encontro ninguna coincidencia'
+            }, 404

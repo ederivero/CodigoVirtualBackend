@@ -7,7 +7,7 @@ from base_datos import db
 from controllers.estante import EstantesController, EstanteController
 from models.autor import AutorModel
 # from models.libro import LibroModel
-from controllers.libro import LibrosController, LibroController
+from controllers.libro import LibrosController, LibroController, EncontrarLibroController
 from models.autorlibro import AutorLibroModel
 
 app = Flask(__name__)
@@ -33,6 +33,7 @@ api.add_resource(EstantesController,'/estante')
 api.add_resource(EstanteController, '/estante/<int:est_id>')
 api.add_resource(LibrosController, '/libro')
 api.add_resource(LibroController, '/libro/<int:lib_id>')
+api.add_resource(EncontrarLibroController,'/libro/<string:palabra>')
 
 if __name__ == '__main__':
     app.run(debug=True)
