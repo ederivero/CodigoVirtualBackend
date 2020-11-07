@@ -21,6 +21,12 @@ class EstantesController(Resource):
         required=True,
         help="Falta la descripcion"
     )
+    parser.add_argument(
+        "estado",
+        type=bool,
+        required=False,
+        help='Falta el estado'
+    )
     def get(self):
         estantes = EstanteModel.query.all()
         # print(estantes)
@@ -36,7 +42,7 @@ class EstantesController(Resource):
     
     def post(self):
         data = self.parser.parse_args()
-        estante = EstanteModel(data['capacidad'],data['ubicacion'], data['descripcion'])
+        estante = EstanteModel(data['capacidad'],data['ubicacion'], data['descripcion'], data['estado'])
         try:
             estante.guardar_bd()
             print(estante)
@@ -89,10 +95,17 @@ class EstanteController(Resource):
                 required=True,
                 help="Falta la descripcion"
             )
+            parser.add_argument(
+                "estado",
+                type=bool,
+                required=True,
+                help='Falta el estado'
+            )
             data = parser.parse_args()
             estante.capacidad= data['capacidad']
             estante.ubicacion= data['ubicacion']
             estante.descripcion= data['descripcion']
+            estante.estado = data['estado']
             estante.guardar_bd()
 
             return {
@@ -106,3 +119,7 @@ class EstanteController(Resource):
                 'content': None,
                 'message': 'No existe el estante con id: '+str(est_id)
             }, 404
+    def delete(self, est_id):
+        # desahiblitar ese estante segun su ID
+        
+        return 'ok'

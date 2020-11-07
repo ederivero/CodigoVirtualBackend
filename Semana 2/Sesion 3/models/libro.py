@@ -8,11 +8,12 @@ class LibroModel(db.Model):
     precio = db.Column("lib_precio", db.DECIMAL(5,2))
     publicacion = db.Column("lib_publicacion",db.String(4))
     codigo = db.Column("lib_cod", db.Text)
+    estado = db.Column(db.Boolean, default=True)
     # RELACIONES
     est_id = db.Column(db.Integer, db.ForeignKey('t_estante.est_id'), nullable=False)
     autores = db.relationship('AutorLibroModel', backref='libro')
 
-    def __init__(self, nombre, editorial, numpaginas, precio, publicacion, codigo, estante):
+    def __init__(self, nombre, editorial, numpaginas, precio, publicacion, codigo, estante, estado):
         self.nombre = nombre
         self.editorial = editorial
         self.numpaginas = numpaginas
@@ -20,4 +21,4 @@ class LibroModel(db.Model):
         self.publicacion = publicacion
         self.codigo = codigo 
         self.est_id = estante
-
+        self.estado = estado
