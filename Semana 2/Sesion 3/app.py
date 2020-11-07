@@ -32,7 +32,7 @@ def inicio():
 api.add_resource(EstantesController,'/estante')
 api.add_resource(EstanteController, '/estante/<int:est_id>')
 api.add_resource(LibrosController, '/libro')
-api.add_resource(LibroController, '/libro/<int:libro_id>')
+api.add_resource(LibroController, '/libro/<int:lib_id>')
 
 if __name__ == '__main__':
     app.run(debug=True)
