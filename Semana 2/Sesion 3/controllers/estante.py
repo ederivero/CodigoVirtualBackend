@@ -121,5 +121,26 @@ class EstanteController(Resource):
             }, 404
     def delete(self, est_id):
         # desahiblitar ese estante segun su ID
-        
-        return 'ok'
+        estante = EstanteModel.query.filter_by(id=est_id).first()
+        if estante:
+            if estante.estado == True:
+                estante.estado = False
+                estante.guardar_bd()
+                return {
+                    'ok': True,
+                    'content': None,
+                    'message': 'Se inhabilito exitosamente el estante'
+                }
+            else:
+                # si el estante ya esta deshabilitado que indique que ya lo esta
+                return {
+                    'ok': False,
+                    'content': None,
+                    'message': 'El estante ya se encuentra deshabilitado'
+                }, 400
+        else:
+            return {
+                'ok': False,
+                'content':None,
+                'message': 'No existe el estante'
+            }, 400
