@@ -1,4 +1,7 @@
 from django.db import models
+# TAREA
+# agregar un estado para todas los modelos en el cual su valor por defecto sea True y sea de tipo BooleanField, ademas poner como nombre de columna en la base de datos "estado" y que no permita que sea Nulo
+# hacer las migraciones y que se vean reflejadas en la base de datos.
 
 # Create your models here.
 class LocalModel(models.Model):
@@ -18,6 +21,7 @@ class TipoCanchaModel(models.Model):
     tipoCanchaDesc = models.CharField(db_column='tc_desc', max_length=40)
     createdAt = models.DateTimeField(db_column='created_at', auto_now_add=True)
     updatedAt = models.DateTimeField(db_column='updated_at', auto_now=True)
+
     class Meta:
         db_table = 't_tipocancha'
 
