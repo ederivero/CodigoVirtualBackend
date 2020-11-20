@@ -13,6 +13,8 @@ class LocalModel(models.Model):
     # Campos para auditoria
     createdAt = models.DateTimeField(db_column='created_at', auto_now_add=True)
     updatedAt = models.DateTimeField(db_column='updated_at', auto_now=True)
+    estado = models.BooleanField(default=True, null=False)
+
     class Meta:
         db_table = 't_local'
 
@@ -21,7 +23,7 @@ class TipoCanchaModel(models.Model):
     tipoCanchaDesc = models.CharField(db_column='tc_desc', max_length=40)
     createdAt = models.DateTimeField(db_column='created_at', auto_now_add=True)
     updatedAt = models.DateTimeField(db_column='updated_at', auto_now=True)
-
+    estado = models.BooleanField(default=True, null=False)
     class Meta:
         db_table = 't_tipocancha'
 
@@ -34,6 +36,7 @@ class CanchaModel(models.Model):
     localId = models.ForeignKey(LocalModel, on_delete=models.PROTECT, db_column='local_id', related_name='canchasLocal')
     createdAt = models.DateTimeField(db_column='created_at', auto_now_add=True)
     updatedAt = models.DateTimeField(db_column='updated_at', auto_now=True)
+    estado = models.BooleanField(default=True, null=False)
     class Meta:
         db_table = 't_cancha'
 
@@ -42,6 +45,7 @@ class TipoClienteModel(models.Model):
     tipoClientePrec = models.DecimalField(db_column='tc_prec', max_digits=5,decimal_places=2)
     createAt = models.DateTimeField(db_column='create_at',auto_now_add=True)
     updateAt = models.DateTimeField(db_column='update_at',auto_now=True)
+    estado = models.BooleanField(default=True, null=False)
     class Meta:
         db_table='t_tipocliente'
 
@@ -51,6 +55,7 @@ class ClienteModel(models.Model):
     tipoClienteId = models.ForeignKey(TipoClienteModel, on_delete=models.PROTECT, db_column='tc_id', related_name='clientesTipo')
     createAt = models.DateTimeField(db_column='create_at',auto_now_add=True)
     updateAt = models.DateTimeField(db_column='update_at',auto_now=True)
+    estado = models.BooleanField(default=True, null=False)
     class Meta:
         db_table = 't_cliente'
 
@@ -61,5 +66,6 @@ class RegistroModel(models.Model):
     registroFechFin = models.DateTimeField(db_column='reg_fechfin')
     canchaId = models.ForeignKey(CanchaModel, on_delete=models.PROTECT, db_column='cancha_id', related_name='registrosCancha')
     clienteId = models.ForeignKey(ClienteModel, on_delete=models.PROTECT, db_column='cliente_id', related_name='registrosCliente')
+    estado = models.BooleanField(default=True, null=False)
     class Meta:
         db_table = 't_registro'

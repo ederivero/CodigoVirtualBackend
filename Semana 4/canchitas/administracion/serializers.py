@@ -14,3 +14,8 @@ class TipoCanchaSerializer(serializers.ModelSerializer):
         self.instance.tipoCanchaDesc = self.validated_data.get('tipoCanchaDesc', self.instance.tipoCanchaDesc)
         self.instance.save()
         return self.instance
+    def delete(self):
+        # hacer el comportamiento para que al llamar al metodo delete su estado de la instancia cambie a false
+        self.instance.estado = False
+        self.instance.save()
+        return self.instance

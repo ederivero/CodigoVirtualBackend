@@ -52,7 +52,7 @@ class TipoCanchaView(RetrieveUpdateDestroyAPIView):
             'message':None
         })
     def put(self, request, tipoCanchaId):
-        respuesta = self.serializer_class(self.get_queryset().get(tipoCanchaId=tipoCanchaId),data=request.data)
+        respuesta = self.get_serializer(self.get_queryset().get(tipoCanchaId=tipoCanchaId),data=request.data)
         if respuesta.is_valid():
             resultado = respuesta.update()
             return Response({
@@ -60,3 +60,12 @@ class TipoCanchaView(RetrieveUpdateDestroyAPIView):
                 'content':self.serializer_class(resultado).data,
                 'message': None
             })
+    def delete(self, request, tipoCanchaId):
+        respuesta = self.get_serializer(self.get_queryset().get(tipoCanchaId=tipoCanchaId))
+        if respuesta.is_valid():
+            resultado = respuesta.delete()
+            return Response({
+                'ok':True,
+                'content': self.get_serializer(resultado).data,
+                'message': 'Se inhabilito con exito el tipo de Cancha'
+            }, status=status.HTTP_200_OK)
