@@ -3,54 +3,70 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, Permis
 from django.utils import timezone
 class ManejoUsuario(BaseUserManager):
     use_in_migrations = True
-    def _create_user(self, email, name, phone, password, **extra_fields):
-        values = [email, phone, name]
+    def _create_user(self, usuCorreo, usuNombre, usuFono, usuPass, **extra_fields):
+        values = [usuCorreo, usuFono, usuNombre]
         field_value_map = dict(zip(self.model.REQUIRED_FIELDS, values))
         for field_name, value in field_value_map.items():
             if not value:
                 raise ValueError("El valor de {} debe estar definido".format(field_name))
-        email = self.normalize_email(email)
+        usuCorreo = self.normalize_email(usuCorreo)
         user = self.model(
-            email = email,
-            name=name,
-            phone=phone,
+            usuCorreo = usuCorreo,
+            usuNombre=usuNombre,
+            usuFono=usuFono,
             **extra_fields
         )
-        user.set_password(password)
+        user.set_password(usuPass)
         user.save(using=self._db)
         return user
 
-    def create_user(self, email, name, phone, password=None, **extra_fields):
+    def create_user(self, usuCorreo, usuNombre, usuFono, usuPass=None, **extra_fields):
         extra_fields.setdefault('is_staff', False)
         extra_fields.setdefault('is_superuser',False)
-        return self._create_user(email,name,phone,password, **extra_fields)
+        return self._create_user(usuCorreo, usuNombre, usuFono, usuPass, **extra_fields)
     
-    def create_superuser(self, email, name, phone, password, **extra_fields):
+    def create_superuser(self,  usuCorreo, usuNombre, usuFono, usuPass, **extra_fields):
         extra_fields.setdefault('is_staff',True)
         extra_fields.setdefault('is_superuser',True)
         if extra_fields.get('is_staff') is not True:
             raise ValueError('El super usuario debe de ser staff')
         if extra_fields.get('is_superuser') is not True:
             raise ValueError('El super usuario debe de ser superusuario')
-        return self._create_user(email, name, phone, password, **extra_fields)
+        return self._create_user( usuCorreo, usuNombre, usuFono, usuPass, **extra_fields)
 
 
 
 class Usuario(AbstractBaseUser, PermissionsMixin):
-    email = models.EmailField(unique=True)
-    name = models.CharField(max_length=50)
-    phone = models.CharField(max_length=15)
-    birthday = models.DateField(blank=True, null=True)
-    # CAMPOS OBLIGATORIAMENTE EN INGLES
+    usuId = models.AutoField(db_column='usu_id', primary_key=True)
+    usuCorreo = models.EmailField(db_column='usu_correo', unique=True)
+    usuNombre = models.CharField(db_column='usu_nombre', max_length=50)
+    usuFono = models.CharField(db_column='usu_fono', max_length=15)
+    usuCumple = models.DateField(db_column='usu_cumple', blank=True, null=True)
+    usuPass = models.TextField(db_column='usu_pass', null=True)
+    # CAMPOS OBLIGATORIAMENTE EN INGLES y si o si tienen que ir
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
+    #
+
     date_joined = models.DateTimeField(default = timezone.now)
     last_login = models.DateTimeField(null=True)
 
     objects = ManejoUsuario()
 
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['name','phone']
+    USERNAME_FIELD = 'usuCorreo'
+    REQUIRED_FIELDS = ['usuNombre','usuFono']
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
