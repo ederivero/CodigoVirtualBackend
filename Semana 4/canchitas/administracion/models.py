@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.utils import timezone
+from rest_framework_simplejwt.tokens import RefreshToken
 class ManejoUsuario(BaseUserManager):
     use_in_migrations = True
     def _create_user(self, usuCorreo, usuNombre, usuFono, usuPass, **extra_fields):
@@ -34,15 +35,13 @@ class ManejoUsuario(BaseUserManager):
             raise ValueError('El super usuario debe de ser superusuario')
         return self._create_user( usuCorreo, usuNombre, usuFono, usuPass, **extra_fields)
 
-
-
 class Usuario(AbstractBaseUser, PermissionsMixin):
     usuId = models.AutoField(db_column='usu_id', primary_key=True)
-    usuCorreo = models.EmailField(db_column='usu_correo', unique=True)
+    usuCorreo = models.EmailField(db_column='usu_correo', unique=True, verbose_name='Correo')
     usuNombre = models.CharField(db_column='usu_nombre', max_length=50)
     usuFono = models.CharField(db_column='usu_fono', max_length=15)
     usuCumple = models.DateField(db_column='usu_cumple', blank=True, null=True)
-    usuPass = models.TextField(db_column='usu_pass', null=True)
+    password = models.TextField(db_column='usu_pass', null=True)
     # CAMPOS OBLIGATORIAMENTE EN INGLES y si o si tienen que ir
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
@@ -55,7 +54,16 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
 
     USERNAME_FIELD = 'usuCorreo'
     REQUIRED_FIELDS = ['usuNombre','usuFono']
-
+    
+    def tokens(self):
+        tokens = RefreshToken.for_user(self)
+        return {
+            'acceso': str(tokens.access_token),
+            'refresh': str(tokens)
+        }
+    class Meta:
+        db_table = 't_usuario'
+    
 
 
 

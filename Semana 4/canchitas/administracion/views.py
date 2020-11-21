@@ -1,8 +1,9 @@
-from .models import TipoCanchaModel, CanchaModel
-from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
+from .models import TipoCanchaModel, CanchaModel, Usuario
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, CreateAPIView, GenericAPIView
 from rest_framework.response import Response
 from rest_framework import status
-from .serializers import TipoCanchaSerializer, CanchaSerializer
+from .serializers import TipoCanchaSerializer, CanchaSerializer , UsuarioRegistroSerializer, LoginSerializer
+from rest_framework.permissions import IsAuthenticated
 # Create your views here.
 
 class TipoCanchasView(ListCreateAPIView):
@@ -78,6 +79,7 @@ class TipoCanchaView(RetrieveUpdateDestroyAPIView):
 class CanchasView(ListCreateAPIView):
     queryset = CanchaModel.objects.all()
     serializer_class = CanchaSerializer
+    permission_classes = (IsAuthenticated,)
     def get(self, request):
         resultado = self.get_serializer(self.get_queryset(), many=True).data
         return Response({
@@ -100,3 +102,42 @@ class CanchasView(ListCreateAPIView):
                 'message':'Error al crear la cancha',
                 'content':None
             },status=status.HTTP_400_BAD_REQUEST)
+
+class RegistroView(CreateAPIView):
+    queryset = Usuario.objects.all()
+    serializer_class = UsuarioRegistroSerializer
+    def post(self, request):
+        # VALIDAR SI YA HAY UN USUARIO CON ESE EMAIL
+        correo = request.data.get('usuCorreo')
+        # el filter devuelve una LISTA de todas las coincidencias y el get si no hay indicara un error
+        usuarios = self.get_queryset().filter(usuCorreo=correo).first()
+        if usuarios:
+            return Response({
+                'ok': False,
+                'message':'El usuario con correo {} ya existe'.format(correo,)
+            },status = status.HTTP_400_BAD_REQUEST)
+        else:
+            respuesta = self.get_serializer(data=request.data)
+            if respuesta.is_valid(raise_exception=True):
+                resultado = respuesta.save()
+                return Response({
+                    'ok': True,
+                    'content': self.get_serializer(resultado).data,
+                    'message':'Usuario creado exitosamente'
+                }, status=201)
+            else:
+                return Response({
+                    'ok': False,
+                    'message': 'Data Incorrecta'
+                }, status=status.HTTP_400_BAD_REQUEST)
+
+class LoginView(GenericAPIView):
+    serializer_class = LoginSerializer
+    def post(self, request):
+        serializador = self.get_serializer(data=request.data)
+        serializador.is_valid(raise_exception=True)
+        return Response({
+            'ok':True,
+            'content':serializador.data
+        })
+
