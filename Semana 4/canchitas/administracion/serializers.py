@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import TipoCanchaModel
+from .models import TipoCanchaModel, CanchaModel
 
 class TipoCanchaSerializer(serializers.ModelSerializer):
     class Meta:
@@ -19,3 +19,9 @@ class TipoCanchaSerializer(serializers.ModelSerializer):
         self.instance.estado = False
         self.instance.save()
         return self.instance
+
+class CanchaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CanchaModel
+        fields = '__all__'
+    
