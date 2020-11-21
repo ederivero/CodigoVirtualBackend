@@ -16,7 +16,26 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
+from drf_yasg.views import get_schema_view
+from drf_yasg import openapi
+from rest_framework import permissions
+
+schema_view = get_schema_view(
+    openapi.Info(
+        title="Canchitas",
+        default_version="v1",
+        description="Primera api con django y drf",
+        terms_of_service="https://www.google.com",
+        contact=openapi.Contact(email="ederiveroman@gmail.com"),
+        license=openapi.License(name="MIT"),
+    ),
+    public=True,
+    permission_classes=(permissions.AllowAny,)
+)
+
 urlpatterns = [
+    path('', schema_view.with_ui('swagger', cache_timeout=0)),
+    path('redoc', schema_view.with_ui('redoc', cache_timeout=0)),
     path('admin/', admin.site.urls),
     path('adminapp/', include('administracion.urls')),
 ]
