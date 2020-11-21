@@ -1,7 +1,64 @@
 from django.db import models
-# TAREA
-# agregar un estado para todas los modelos en el cual su valor por defecto sea True y sea de tipo BooleanField, ademas poner como nombre de columna en la base de datos "estado" y que no permita que sea Nulo
-# hacer las migraciones y que se vean reflejadas en la base de datos.
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
+from django.utils import timezone
+class ManejoUsuario(BaseUserManager):
+    use_in_migrations = True
+    def _create_user(self, email, name, phone, password, **extra_fields):
+        values = [email, phone, name]
+        field_value_map = dict(zip(self.model.REQUIRED_FIELDS, values))
+        for field_name, value in field_value_map.items():
+            if not value:
+                raise ValueError("El valor de {} debe estar definido".format(field_name))
+        email = self.normalize_email(email)
+        user = self.model(
+            email = email,
+            name=name,
+            phone=phone,
+            **extra_fields
+        )
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_user(self, email, name, phone, password=None, **extra_fields):
+        extra_fields.setdefault('is_staff', False)
+        extra_fields.setdefault('is_superuser',False)
+        return self._create_user(email,name,phone,password, **extra_fields)
+    
+    def create_superuser(self, email, name, phone, password, **extra_fields):
+        extra_fields.setdefault('is_staff',True)
+        extra_fields.setdefault('is_superuser',True)
+        if extra_fields.get('is_staff') is not True:
+            raise ValueError('El super usuario debe de ser staff')
+        if extra_fields.get('is_superuser') is not True:
+            raise ValueError('El super usuario debe de ser superusuario')
+        return self._create_user(email, name, phone, password, **extra_fields)
+
+
+
+class Usuario(AbstractBaseUser, PermissionsMixin):
+    email = models.EmailField(unique=True)
+    name = models.CharField(max_length=50)
+    phone = models.CharField(max_length=15)
+    birthday = models.DateField(blank=True, null=True)
+    # CAMPOS OBLIGATORIAMENTE EN INGLES
+    is_staff = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
+    date_joined = models.DateTimeField(default = timezone.now)
+    last_login = models.DateTimeField(null=True)
+
+    objects = ManejoUsuario()
+
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['name','phone']
+
+
+
+
+
+
+
+
 
 # Create your models here.
 class LocalModel(models.Model):
