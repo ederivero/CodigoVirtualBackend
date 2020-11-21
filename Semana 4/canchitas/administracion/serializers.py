@@ -16,6 +16,7 @@ class CanchaSerializer(serializers.ModelSerializer):
         # exclude=['localId']
 
 class TipoCanchaSerializer(serializers.ModelSerializer):
+    # la forma correcta de hacer una relacion inversa
     canchas = CanchaSerializer(source='canchasTipoCancha',many=True, read_only=True)
     class Meta:
         model = TipoCanchaModel
