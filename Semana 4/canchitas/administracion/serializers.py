@@ -1,7 +1,22 @@
 from rest_framework import serializers
-from .models import TipoCanchaModel, CanchaModel
+from .models import TipoCanchaModel, CanchaModel, LocalModel
+
+
+class LocalSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = LocalModel
+        fields = '__all__'
+
+
+class CanchaSerializer(serializers.ModelSerializer):
+    local = LocalSerializer(source='localId', read_only=True)
+    class Meta:
+        model = CanchaModel
+        fields = '__all__'
+        # exclude=['localId']
 
 class TipoCanchaSerializer(serializers.ModelSerializer):
+    canchas = CanchaSerializer(source='canchasTipoCancha',many=True, read_only=True)
     class Meta:
         model = TipoCanchaModel
         # se usa o el atributo fields o el atributo exclude
@@ -20,8 +35,5 @@ class TipoCanchaSerializer(serializers.ModelSerializer):
         self.instance.save()
         return self.instance
 
-class CanchaSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = CanchaModel
-        fields = '__all__'
+
     
