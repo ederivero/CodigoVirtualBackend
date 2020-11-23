@@ -41,12 +41,50 @@ const getTareaById = (req, res)=>{// traerTareaPorId
             content:null
         })
     }
-}  
+} 
+const actualizarTarea = (req, res)=>{
+    // /tarea/:id_tarea
+    let {id_tarea} = req.params;
+    if(tareas.length > id_tarea){
+        // si existe la posicion en mi arreglo de tareas
+        let data = req.body;
+        tareas[id_tarea] = data;
+        return res.status(201).json({
+            ok:true,
+            message:'Se actualizo la tarea con exito',
+            content:tareas[id_tarea]
+        });
+    }else{
+        return res.status(404).json({
+            ok:false,
+            message:'No existe la tarea con ese id'
+        })
+    }
+}
+const eliminarTareaById = (req,res)=>{
+    let {id_tarea} = req.params;
+    if(tareas.length > id_tarea){
+        tareas.splice(id_tarea,1);
+        return res.json({
+            ok:true,
+            message:'Se elimino la tarea exitosamente',
+            content:tareas
+        });
+    }else{
+        return res.status(404).json({
+            ok:false,
+            message:'No existe la tarea con ese id'
+        });
+    }
+}
+
 
 // se necesita exportar todas las variables, funciones, clases y otros que se vayan a necesitar en otro archivo JS
 module.exports = {
     // getTareas: getTareas,
     getTareas,
     crearTarea,
-    getTareaById
+    getTareaById,
+    actualizarTarea,
+    eliminarTareaById
 }
