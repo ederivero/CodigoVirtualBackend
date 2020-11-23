@@ -27,11 +27,11 @@ const getTareaById = (req, res)=>{// traerTareaPorId
     // console.log(id_tarea);
     // console.log(tareas.length);
     // se le resta en una unidad puesto que al empezar el array en posicion 0 el front puede pensar que va desde la posicion 1 y por ende para que sea el mismo orden se hace el decremento
-    if(tareas.length > id_tarea-1){
+    if(tareas.length > id_tarea){
         // si la longitud del array de tareas es mayor que uno de sus id (posicion) significa que si hay esa tarea
         return res.json({
             ok:true,
-            content:tareas[id_tarea-1],
+            content:tareas[id_tarea],
             message:null
         })
     }else{
@@ -58,7 +58,7 @@ const actualizarTarea = (req, res)=>{
         return res.status(404).json({
             ok:false,
             message:'No existe la tarea con ese id'
-        })
+        });
     }
 }
 const eliminarTareaById = (req,res)=>{
