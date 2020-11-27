@@ -1,5 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const {conexion} = require('./Sequelize');
 class Server {
     constructor(){
         this.app = express();
@@ -32,6 +33,11 @@ class Server {
     iniciarServidor(){
         this.app.listen(this.puerto, ()=>{
             console.log('Servidor corriendo exitosamente en el puerto '+this.puerto);
+            // force:true => que va a borrar toda la base de datos y la va a crear de nuevo (hace un drop all tables y crea todas las tablas de 0 de nuevo)
+            // alter: true => verifica que los modelos esten igual que las tablas, y si hay algun cambio solamente va a hacer cambio a esa parte en especifico y no se va a perder la informacion
+            conexion.sync({force:true, alter:true}).then(()=>{
+                console.log('Base de datos sincronizada correctamente');
+            })
         });
     }
 }
