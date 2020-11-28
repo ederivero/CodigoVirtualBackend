@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const {conexion} = require('./Sequelize');
 const {pabellon_router} = require('../routes/Pabellon');
+const {docente_router} = require('../routes/Docente');
 class Server {
     constructor(){
         this.app = express();
@@ -31,6 +32,7 @@ class Server {
             res.send('EL servidor funciona!!!! ');
         });
         this.app.use('',pabellon_router);
+        this.app.use('',docente_router);
     }
     iniciarServidor(){
         this.app.listen(this.puerto, ()=>{
