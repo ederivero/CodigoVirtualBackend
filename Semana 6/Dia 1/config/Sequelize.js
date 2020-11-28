@@ -23,9 +23,7 @@ const Pabellon = pabellon_model(conexion);
 const Aula = aula_model(conexion);
 const Reserva = reserva_model(conexion);
 const Docente = docente_model(conexion);
-
 // Una vez definido los modelos, se procede a crear las relaciones
-
 // Pabellon tiene muchos Aula 
 Pabellon.hasMany(Aula, {foreignKey: 'pabellon_id'});
 // Aula pertenece a Pabellon
@@ -36,5 +34,9 @@ Aula.hasMany(Reserva,{foreignKey: "aula_id"});
 Reserva.belongsTo(Aula, {foreignKey: "aula_id"});
 
 module.exports = {
-    conexion: conexion
+    conexion: conexion,
+    Pabellon: Pabellon,
+    Aula: Aula,
+    Docente: Docente,
+    Reserva
 }
