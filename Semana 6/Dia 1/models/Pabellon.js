@@ -1,4 +1,5 @@
 const Sequelize = require('sequelize');
+const {DataTypes} = require('sequelize');
 
 const pabellon_model = (conexion)=>{
     let pabellon = conexion.define('pabellones',{
@@ -14,7 +15,11 @@ const pabellon_model = (conexion)=>{
             type: Sequelize.STRING(45),
             allowNull: false,
             field:'pabellon_nomb'
-        }
+        },
+        estado: {
+            type: DataTypes.BOOLEAN,
+            default: true
+        },
     },{
         tableName : 't_pabellon',
         timestamps: true
