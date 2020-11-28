@@ -1,5 +1,6 @@
 const Sequelize = require('sequelize');
 const crypto = require('crypto');
+const jwt = require('jsonwebtoken');
 const docente_model = (conexion) => {
     let docente = conexion.define('docentes', {
         docId: {
@@ -45,12 +46,26 @@ const docente_model = (conexion) => {
     docente.prototype.validarPassword = function (password) {
         let hashTemporal = crypto.pbkdf2Sync(password, this.docSalt, 1000, 64, 'sha512').toString('hex');
         // si la hash temporal es exactamente igual que la hash almacenada en la bd significa que las contraseñas concuerdan y por ende retorno True
-        if(hashTemporal === this.docHash){
+        if (hashTemporal === this.docHash) {
             return true;
-        }else{
+        } else {
             return false;
         }
     }
+    docente.prototype.generarJWT = function () {
+        // generar el payload
+        // el payload es la parte intermedia del JWT y sirve para guardar informacion de timpo de vida e informacion adicional como el nombre del docente u otros.
+        let payload = {
+            docId: this.docId,
+            docNomb: this.docNomb + ' ' + this.docApe
+        }
+        // esta es la forma de generar la token, se manda el payload, la contraseña de la token y algunas opciones extras como la duracion y el algoritmo para su encriptacion
+        let token = jwt.sign(payload, 'codigo', { expiresIn: 60 }, { algorithm: 'RS256' });
+        console.log(token);
+        return token;
+    }
+
+
     return docente;
 }
 module.exports = docente_model;
