@@ -9,7 +9,6 @@ var telefonoSchema = new Schema({
         minlength: 6, //si el string ingresado es menor que el valor no va a permitir su registro
         maxlength: 15,
         required: true, // no va a permitir que el valor quede en null
-
     },
     fono_operador: {
         type: String,
@@ -32,4 +31,9 @@ export var usuarioSchema = new Schema({
     usu_fonos: [
         telefonoSchema
     ]
-}, { timestamps: true })
+}, {
+    timestamps: {
+        createdAt: 'fecha_creacion', 
+        updatedAt: 'fecha_actualizacion'
+    }
+})

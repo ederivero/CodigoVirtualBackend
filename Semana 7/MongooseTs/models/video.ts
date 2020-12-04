@@ -1,21 +1,33 @@
-import mongoose from 'mongoose';
+import { Schema } from 'mongoose';
 
-var Schema = mongoose.Schema;
+var likeSchema = new Schema({
+    usu_mail: {
+        type: String
+    },
+    usu_nomb: {
+        type: String,
+        minlength: 20
+    }
+});
+
+var commentSchema = new Schema({
+    usu_info: likeSchema,
+    usu_comment: {
+        type: String,
+        minlength: 20,
+        maxlength: 200
+    }
+});
+
 export var videoSchema = new Schema({
     vid_titulo: String,
     vid_desc: String,
     vid_link: String,
     vid_img: String,
-    vid_likes : [
-        {
-            usu_mail: String
-        }
+    vid_likes: [
+        likeSchema
     ],
     vid_coments: [
-        {
-            usu_nomb: String,
-            usu_mail: String,
-            usu_coment: String
-        }
+        commentSchema
     ]
-})
+}, { timestamps: true })
