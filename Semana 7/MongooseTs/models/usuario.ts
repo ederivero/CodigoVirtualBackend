@@ -1,5 +1,6 @@
 // npm i mongoose
 import mongoose from 'mongoose';
+import crypto from 'crypto';
 var Schema = mongoose.Schema;
 // https://mongoosejs.com/docs/schematypes.html
 
@@ -20,10 +21,14 @@ var telefonoSchema = new Schema({
 export var usuarioSchema = new Schema({
     usu_nom: String,
     usu_ape: String,
-    usu_mail: String,
+    usu_mail: {
+        type: String,
+        index:true,
+        unique: true
+    },
     usu_fecnac: {
         type: String,
-        min: '1990-01-01',
+        min: '1970-01-01',
         max: '2002-12-31'
     },
     usu_hash: String,
@@ -37,3 +42,7 @@ export var usuarioSchema = new Schema({
         updatedAt: 'fecha_actualizacion'
     }
 })
+usuarioSchema.methods.encriptarPassword = function(password:string){
+    this.usu_salt = crypto.randomBytes(16).toString('hex');
+    this.usu_hash = crypto.pbkdf2Sync(password,this.usu_salt,1000,64,'sha512').toString('hex');
+}

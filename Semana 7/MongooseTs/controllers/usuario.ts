@@ -1,10 +1,12 @@
 import { Request, Response } from 'express';
+import { CallbackError } from 'mongoose';
 import { Usuario } from '../config/mongoose';
 
 export var crearUsuario = (req: Request, res: Response) => {
     // forma 1
-    let objUsuario = new Usuario(req.body);
-    objUsuario.save((error, nuevoUsuario) => {
+    let objUsuario:any = new Usuario(req.body);
+    objUsuario.encriptarPassword(req.body.password);
+    objUsuario.save((error:CallbackError, nuevoUsuario:Document) => {
         if (error) {
             res.status(500).json({
                 ok: false,
@@ -35,4 +37,8 @@ export var crearUsuario = (req: Request, res: Response) => {
     //         })
     //     }
     // });
-}
+};
+
+export var devolverUsuario = (req:Request, res:Response)=>{
+
+};
