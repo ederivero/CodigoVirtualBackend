@@ -23,7 +23,10 @@ export var videoSchema = new Schema({
     vid_titulo: String,
     vid_desc: String,
     vid_link: String,
-    vid_img: String,
+    vid_img: {
+        type: String,
+        default: 'image.jpg'
+    },
     vid_likes: [
         likeSchema
     ],
