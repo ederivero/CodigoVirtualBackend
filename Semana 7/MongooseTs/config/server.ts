@@ -4,6 +4,7 @@ import bodyParser from 'body-parser';
 import { Request, Response, NextFunction } from 'express';
 import mongoose from 'mongoose';
 import { usuario_router } from '../routes/usuario';
+import { video_router } from '../routes/video';
 
 export default class Server {
     public app: express.Application;
@@ -30,7 +31,9 @@ export default class Server {
         this.app.get('/', (req: Request, res: Response) => {
             res.send('Bienvenido a mi API');
         });
-        this.app.use('',usuario_router);
+        this.app.use('', usuario_router);
+        this.app.use('', video_router);
+
     }
     iniciarServidor() {
         this.app.listen(this.puerto, () => {
@@ -38,8 +41,9 @@ export default class Server {
         })
     }
     conectarMongo() {
-        mongoose.connect('mongodb://localhost:27017/videosVirtual', { useNewUrlParser: true, useFindAndModify: false, useUnifiedTopology: true,
-        useCreateIndex:true
-     })
+        mongoose.connect('mongodb://localhost:27017/videosVirtual', {
+            useNewUrlParser: true, useFindAndModify: false, useUnifiedTopology: true,
+            useCreateIndex: true
+        })
     }
 }

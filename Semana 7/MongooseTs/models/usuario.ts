@@ -1,6 +1,7 @@
 // npm i mongoose
 import mongoose from 'mongoose';
 import crypto from 'crypto';
+import { sign } from 'jsonwebtoken';
 var Schema = mongoose.Schema;
 // https://mongoosejs.com/docs/schematypes.html
 
@@ -23,7 +24,7 @@ export var usuarioSchema = new Schema({
     usu_ape: String,
     usu_mail: {
         type: String,
-        index:true,
+        index: true,
         unique: true
     },
     usu_fecnac: {
@@ -38,21 +39,30 @@ export var usuarioSchema = new Schema({
     ]
 }, {
     timestamps: {
-        createdAt: 'fecha_creacion', 
+        createdAt: 'fecha_creacion',
         updatedAt: 'fecha_actualizacion'
     }
 })
-usuarioSchema.methods.encriptarPassword = function(password:string){
+usuarioSchema.methods.encriptarPassword = function (password: string) {
     this.usu_salt = crypto.randomBytes(16).toString('hex');
-    this.usu_hash = crypto.pbkdf2Sync(password,this.usu_salt,1000,64,'sha512').toString('hex');
+    this.usu_hash = crypto.pbkdf2Sync(password, this.usu_salt, 1000, 64, 'sha512').toString('hex');
 }
-usuarioSchema.methods.verificarPassword = function(password:string){
-    let hashTemporal = crypto.pbkdf2Sync(password, this.usu_salt,1000,64,'sha512').toString('hex');
+usuarioSchema.methods.verificarPassword = function (password: string) {
+    let hashTemporal = crypto.pbkdf2Sync(password, this.usu_salt, 1000, 64, 'sha512').toString('hex');
     // verifico que el hashTemporal sea exactamente igual que el hash almacenado en el objeto
-    if(hashTemporal === this.usu_hash){
+    if (hashTemporal === this.usu_hash) {
         return true;
-    }else{
+    } else {
         return false
     }
     // hashTemporal === this.usu_hash ? true : false
+}
+usuarioSchema.methods.generarJWT = function(){
+    let payload = {
+        usuarioId: this._id,
+        usuarioNombre: this.usu_nom,
+        usuarioApellidos: this.usu_ape
+    }
+    let token = sign(payload,'videosVirtual',{expiresIn:60},{algorithm:'RS256'});
+    return token;
 }

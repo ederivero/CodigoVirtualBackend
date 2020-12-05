@@ -89,28 +89,28 @@ export var actualizarUsuarioPorId = (req: Request, res: Response) => {
 }
 export var loginUsuario = (req: Request, res:Response)=>{
     let {correo, password}= req.body;
-    // verificar que la contraseña ingresada concuerde con la almacenada en la base de datos
-    // HINT: crear un metodo en el modelo como el de encriptar password
-
     Usuario.findOne({usu_mail:correo},(error:any,usuario:any)=>{
         if(usuario){
             let resultado = usuario.verificarPassword(password);
             if(resultado){
                 console.log('Las contraseñas concuerdan');
+                // GENERAR JWT
+                let token = usuario.generarJWT();
                 res.json({
                     ok:true,
-                    message:'Bievenido'
+                    message:'Usuario correcto',
+                    content: token,
                 })
             }else{
                 console.log('Las contraseñas son diferentes');
-                res.json({
+                res.status(400).json({
                     ok:false,
                     message:'Contraseña incorrecta'
                 });
             }
         }else{
             console.log('El usuario no existe');
-            res.json({
+            res.status(404).json({
                 ok:false,
                 message:'El usuario no existe'
             })
