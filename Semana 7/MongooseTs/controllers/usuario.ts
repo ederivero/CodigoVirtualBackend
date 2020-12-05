@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { CallbackError } from 'mongoose';
 import { Usuario } from '../config/mongoose';
+import { usuarioSchema } from '../models/usuario';
 
 export var crearUsuario = (req: Request, res: Response) => {
     // forma 1
@@ -90,11 +91,29 @@ export var loginUsuario = (req: Request, res:Response)=>{
     let {correo, password}= req.body;
     // verificar que la contraseña ingresada concuerde con la almacenada en la base de datos
     // HINT: crear un metodo en el modelo como el de encriptar password
-    
+
     Usuario.findOne({usu_mail:correo},(error:any,usuario:any)=>{
-        console.log(usuario);
-        res.json({
-            ok:true
-        })
-    })
+        if(usuario){
+            let resultado = usuario.verificarPassword(password);
+            if(resultado){
+                console.log('Las contraseñas concuerdan');
+                res.json({
+                    ok:true,
+                    message:'Bievenido'
+                })
+            }else{
+                console.log('Las contraseñas son diferentes');
+                res.json({
+                    ok:false,
+                    message:'Contraseña incorrecta'
+                });
+            }
+        }else{
+            console.log('El usuario no existe');
+            res.json({
+                ok:false,
+                message:'El usuario no existe'
+            })
+        }
+    });
 }

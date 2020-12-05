@@ -46,3 +46,13 @@ usuarioSchema.methods.encriptarPassword = function(password:string){
     this.usu_salt = crypto.randomBytes(16).toString('hex');
     this.usu_hash = crypto.pbkdf2Sync(password,this.usu_salt,1000,64,'sha512').toString('hex');
 }
+usuarioSchema.methods.verificarPassword = function(password:string){
+    let hashTemporal = crypto.pbkdf2Sync(password, this.usu_salt,1000,64,'sha512').toString('hex');
+    // verifico que el hashTemporal sea exactamente igual que el hash almacenado en el objeto
+    if(hashTemporal === this.usu_hash){
+        return true;
+    }else{
+        return false
+    }
+    // hashTemporal === this.usu_hash ? true : false
+}
