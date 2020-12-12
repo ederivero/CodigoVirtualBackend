@@ -43,6 +43,24 @@ def categoriaController():
     else:
         pass
 
+@app.route("/categoria/<string:id>", methods=['DELETE'])
+def removeCategoria(id):
+    # VALIDAR SI EL ID EXISTE Y SI NO INDICAR QUE NO EXISTE, Y QUE AL ELIMINAR LA IMAGEN SI NO EXISTIESE LA IMAGEN ELIMINAR IGUAL LA CATEGORIA PERO INDICAR QUE NO SE PUDO ELIMINAR LA IMAGEN
+
+    # retorna la categoria segun su hijo y si no existe retorna vacio
+    categoria = firebase_categoria.child(id).get()
+    imagen = categoria['imagen'].split("appspot.com/")[1]
+    # con este comando se elimina el archivo del storage
+    try:
+        firebaseAlmacenamiento.delete_blob(imagen)
+    except:
+        pass
+    firebase_categoria.child(id).delete()
+
+    # en base a la url de la imagen solamente yo quiero el nombre de la imagen, la ultima parte de la url 
+    print(imagen)
+    return 'ok'
+
 @app.route("/subirImagen/<coleccion>/<string:id>", methods=['POST'])
 def subirImagen(coleccion, id):
     # 1. VALIDAR QUE EN LOS FILES PASADOS POR EL USUARIO ESTE LA LLAVE imagen (dict key)
