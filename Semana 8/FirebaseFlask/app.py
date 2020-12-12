@@ -1,6 +1,7 @@
 from flask import Flask, request
 from models.categoria import CategoriaCollection
-from firebaseconfig import firebase_categoria
+from firebaseconfig import firebase_categoria, firebaseAlmacenamiento
+from datetime import datetime
 import os
 from werkzeug.utils import secure_filename
 app = Flask(__name__)
@@ -42,16 +43,29 @@ def categoriaController():
     else:
         pass
 
-@app.route("/subirImagen", methods=['POST'])
-def subirImagen():
+@app.route("/subirImagen/<coleccion>/<string:id>", methods=['POST'])
+def subirImagen(coleccion, id):
     imagen = request.files['imagen']
-    nombre_seguro = secure_filename(imagen.filename)
+    # COMO EVITAR QUE SI EL USUARIO ME MANDE EL MISMO NOMBRE DE ARCHIVO QUE YO YA TENGO GUARDADO EN EL SERVIDOR NO SE SOBREESCRIBA
+    # el formato timestamp convierte la fecha actual con su hr, min, seg en un flotante
+    # print(datetime.now().timestamp())
+    fecha = str(datetime.now().timestamp()).replace(".","")
+    nombreFinal = fecha + imagen.filename
+    nombre_seguro = secure_filename(nombreFinal)
     imagen.save(nombre_seguro)
+    blobFirebase = firebaseAlmacenamiento.blob(nombre_seguro)
+    blobFirebase.upload_from_filename(nombre_seguro)
     # antes de que se elimine tenemos que guardar en el storage de firebase
     os.remove(nombre_seguro)
-    print(imagen)
-    return 'ok'
-
+    blobFirebase.make_public()
+    url = blobFirebase.public_url
+    if coleccion == "categoria":
+        firebase_categoria.child(id).update({"imagen":url})
+    print(blobFirebase)
+    return {
+        "ok":True,
+        "message":"se agrego la imagen correctamente"
+    }
 
 
 
