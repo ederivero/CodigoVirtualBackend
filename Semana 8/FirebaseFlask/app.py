@@ -45,27 +45,49 @@ def categoriaController():
 
 @app.route("/subirImagen/<coleccion>/<string:id>", methods=['POST'])
 def subirImagen(coleccion, id):
-    imagen = request.files['imagen']
-    # COMO EVITAR QUE SI EL USUARIO ME MANDE EL MISMO NOMBRE DE ARCHIVO QUE YO YA TENGO GUARDADO EN EL SERVIDOR NO SE SOBREESCRIBA
-    # el formato timestamp convierte la fecha actual con su hr, min, seg en un flotante
-    # print(datetime.now().timestamp())
-    fecha = str(datetime.now().timestamp()).replace(".","")
-    nombreFinal = fecha + imagen.filename
-    nombre_seguro = secure_filename(nombreFinal)
-    imagen.save(nombre_seguro)
-    blobFirebase = firebaseAlmacenamiento.blob(nombre_seguro)
-    blobFirebase.upload_from_filename(nombre_seguro)
-    # antes de que se elimine tenemos que guardar en el storage de firebase
-    os.remove(nombre_seguro)
-    blobFirebase.make_public()
-    url = blobFirebase.public_url
-    if coleccion == "categoria":
-        firebase_categoria.child(id).update({"imagen":url})
-    print(blobFirebase)
-    return {
-        "ok":True,
-        "message":"se agrego la imagen correctamente"
-    }
+    # 1. VALIDAR QUE EN LOS FILES PASADOS POR EL USUARIO ESTE LA LLAVE imagen (dict key)
+    # 2. VALIDAR QUE EL FILE imagen CONTENGA UN ARCHIVO (longitud)
+    # 3. SOLAMENTE PERMITIR EL INGRESO DE ARCHIVOS DE TIPO IMAGEN (https://tedboy.github.io/flask/generated/generated/werkzeug.FileStorage.html)
+    # SI ALGUNA DE LAS ANTERIORES NO SE CUMPLE, MOSTRAR UN MENSAJE QUE NO SE PUEDE REALIZAR LA PETICION CON UN STATUS 400
+    if ("imagen" in request.files) and (request.files["imagen"].filename) and ("image" in request.files["imagen"].content_type) :
+        imagen = request.files["imagen"]
+        # COMO EVITAR QUE SI EL USUARIO ME MANDE EL MISMO NOMBRE DE ARCHIVO QUE YO YA TENGO GUARDADO EN EL SERVIDOR NO SE SOBREESCRIBA
+        # el formato timestamp convierte la fecha actual con su hr, min, seg en un flotante
+        # print(datetime.now().timestamp())
+        fecha = str(datetime.now().timestamp()).replace(".","")
+        nombreFinal = fecha + imagen.filename
+        nombre_seguro = secure_filename(nombreFinal)
+        imagen.save(nombre_seguro)
+        blobFirebase = firebaseAlmacenamiento.blob(nombre_seguro)
+        blobFirebase.upload_from_filename(nombre_seguro)
+        # antes de que se elimine tenemos que guardar en el storage de firebase
+        os.remove(nombre_seguro)
+        blobFirebase.make_public()
+        url = blobFirebase.public_url
+        if coleccion == "categoria":
+            firebase_categoria.child(id).update({"imagen":url})
+
+        return {
+            "ok":True,
+            "message":"se agrego la imagen correctamente"
+        }
+       
+    else:
+        return {
+            "ok":False,
+            "message":"los campos son incorrectos, intente de nuevo mas tarde"
+        }
+
+
+
+
+
+
+
+
+
+
+    
 
 
 
