@@ -13,6 +13,7 @@ var database = firebase.database();
 var nombreCategoria = document.getElementById("nomCat");
 var descripcionCategoria = document.getElementById("descCat");
 var enviarCategoria = document.getElementById("enviar");
+var tabla = document.getElementById("categorias");
 enviarCategoria.addEventListener("click", (event) => {
     event.preventDefault();
     var nombre = nombreCategoria.value;
@@ -32,15 +33,30 @@ enviarCategoria.addEventListener("click", (event) => {
         }
     });
 })
-function visualizarCategoria(){
-    database.ref("categoriaHTML").on("value", (snapshot)=>{
+function visualizarCategoria() {
+    // la diferencia entre on y once es que once devuelve una sola vez (cuando se llama a la funcion) y on se queda conectado con la bd y al haber un cambio (actualizacion, eliminacion, agregacion) devuelve todos los valores de nuevo
+    database.ref("categoriaHTML").on("value", (snapshot) => {
         // UX/UI User Experience & User Interface
         // el snapshot es todo lo que esta en esa referencia, sus configuraciones, sus hijos y complementos adicionales
         // si no hay aun data en esa referencia retornará False si tu usas el metodo snapshot.exists() y retonara null si no hay data
         // https://firebase.google.com/docs/database/web/read-and-write
+        /*
         console.log(snapshot.exists());
-        console.log(snapshot);
-        console.log(snapshot.val());
+        console.log(snapshot.val().nombre);
+        */
+        tabla.innerHTML="";
+        Object.keys(snapshot.val()).forEach(function (key) {
+            /*console.log(key);
+            console.log(snapshot.val()[key].nombre)
+            console.log(snapshot.val()[key].abreviatura)*/
+            let fila = `<tr>
+                <td>${key}</td>
+                <td>${snapshot.val()[key].nombre}</td>
+                <td>${snapshot.val()[key].abreviatura}</td>
+                </tr>`
+            tabla.innerHTML += fila;
+
+        });
         // dibujar todas las categorias en una tabla y cada vez que se agregue una nueva redibujar la tabla.
     })
 }
