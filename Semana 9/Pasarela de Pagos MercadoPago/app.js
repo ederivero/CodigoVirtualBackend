@@ -86,8 +86,28 @@ app.get('/detail', async (req, res) => {
     preference.items.push(item);
     preference.notification_url = `${req.get("host")}/notificaciones`;
     let respuesta = await mercadopago.preferences.create(preference);
-    console.log(respuesta);
+    console.log(respuesta.body.init_point);
+    req.query.init_point = respuesta.body.init_point;
+    req.query.id = respuesta.body.id;
     res.render('detail', req.query);
 });
+// Va a ingresar cuando el pago sea exitoso -- linea 81
+app.get("/success", function(req,res){
+    res.render("success", req.query)
+});
+// Va a ingresar cuando el pago sea pendiente (eligio el metodo pago contraentrega) -- linea 82
+app.get("/pending", function(req,res){
+    res.render("pending", req.query)
+});
+// Va a ingresar cuando el hubo un error al realizar el pago -- linea 83
+app.get("/failure", function(req,res){
+    res.render("failure", req.query)
+});
+app.post("/notificaciones", function(req, res){
+    // todo lo que manda el mercado pago lo recibo mediante el req.query y esto lo definimos en la linea 87
+    console.log(req.query);
+    res.status(200).send("ok")
+});
+
 
 app.listen(port);
