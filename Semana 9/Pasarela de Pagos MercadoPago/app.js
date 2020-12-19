@@ -65,6 +65,26 @@ app.get('/', function (req, res) {
 });
 
 app.get('/detail', function (req, res) {
+    console.log(req.query)
+    console.log(req.get("host"));
+    let item = {
+        id: "1234",
+        title: req.query.title,
+        description: "Dispositivo móvil de Tienda e-commerce",
+        picture_url: req.get("host")+req.query.img.substring(1),//localhost:3000
+        quantity: +req.query.unit,
+        currency_id: "PEN",
+        unit_price: +req.query.price
+        // https://es.wikipedia.org/wiki/ISO_4217
+    };
+    preference.back_urls = {
+        success: `${req.get("host")}/success`,
+        pending: `${req.get("host")}/pending`,
+        failure: `${req.get("host")}/failure`
+    }
+    preference.items = [];
+    preference.items.push(item);
+    preference.notification_url = `${req.get("host")}/notificaciones`;
     res.render('detail', req.query);
 });
 
