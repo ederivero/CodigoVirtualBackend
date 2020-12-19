@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'clientes',
     'inventario',
+    'cita',
 ]
 
 MIDDLEWARE = [
@@ -109,16 +110,17 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
+# https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+# si usamos una zona horaria diferente es necesario cambiar el valor de la variable USE_TZ a False
+LANGUAGE_CODE = 'es'
 
-LANGUAGE_CODE = 'en-us'
-
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Lima'
 
 USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)
