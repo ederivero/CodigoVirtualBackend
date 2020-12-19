@@ -64,7 +64,7 @@ app.get('/', function (req, res) {
     res.render('home');
 });
 
-app.get('/detail', function (req, res) {
+app.get('/detail', async (req, res) => {
     console.log(req.query)
     console.log(req.get("host"));
     let item = {
@@ -85,6 +85,8 @@ app.get('/detail', function (req, res) {
     preference.items = [];
     preference.items.push(item);
     preference.notification_url = `${req.get("host")}/notificaciones`;
+    let respuesta = await mercadopago.preferences.create(preference);
+    console.log(respuesta);
     res.render('detail', req.query);
 });
 
