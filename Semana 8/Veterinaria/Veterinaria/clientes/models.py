@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils import timezone
+from inventario.models import RazaModel
 # retorna la hora actual segun la zona horaria en la que nos encontremos
 # timezone.now() 
 

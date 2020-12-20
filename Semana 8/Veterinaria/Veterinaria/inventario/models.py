@@ -26,6 +26,10 @@ class RazaModel(models.Model):
         verbose_name_plural="Razas"
 
 class ProductoRazaModel(models.Model):
-    productoRazaId = models.AutoField()
-    productotId = models.ForeignKey()
-    razaId = models.ForeignKey()
+    productoRazaId = models.AutoField(primary_key=True, null=False, unique=True, db_column="prod_raza_id")
+    productotId = models.ForeignKey(ProductoModel, on_delete=models.PROTECT, db_column="prod_id")
+    razaId = models.ForeignKey(RazaModel, on_delete=models.PROTECT, db_column="raza_id")
+    class Meta:
+        db_table="t_prod_raza"
+        verbose_name="Producto Raza"
+        verbose_name_plural="Productos Razas"
