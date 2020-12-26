@@ -1,5 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
+
 class Server {
     constructor(){
         this.app = express();
@@ -7,6 +9,7 @@ class Server {
         this.habilitarCORS();
         this.configurarBodyParser();
         this.definirRutas();
+        this.conectarMongo();
     }
     habilitarCORS(){
         this.app.use((req, res, next)=>{
@@ -30,6 +33,15 @@ class Server {
     start(){
         this.app.listen(this.puerto,()=>{
             console.log("Servidor corriendo exitosamente");
+        })
+    }
+    conectarMongo(){
+        // https://mongoosejs.com/docs/connections.html#options
+        mongoose.connect('mongodb://localhost:27017/zapateria',{
+            useNewUrlParser: true,
+            useFindAndModify: false,
+            useUnifiedTopology: true,
+            useCreateIndex: true
         })
     }
 }
