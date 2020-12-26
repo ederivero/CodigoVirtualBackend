@@ -16,7 +16,6 @@ class Server {
             next();
         });
     }
-
     configurarBodyParser(){
         this.app.use(bodyParser.json());
     }
@@ -27,8 +26,7 @@ class Server {
                 message:'La API Funciona! 😊🎃😎🎉'
             });
         });
-    }
-    
+    }    
     start(){
         this.app.listen(this.puerto,()=>{
             console.log("Servidor corriendo exitosamente");
