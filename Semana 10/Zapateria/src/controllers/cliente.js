@@ -18,9 +18,26 @@ const crearCliente = (req, res)=>{
         }
     })
 }
-// controlador para mostrar un cliente segun su dni
 
+const buscarClientePorDni = (req, res)=>{
+    Cliente.findOne({cliDni: req.params.dni},(error,clienteEncontrado)=>{
+        if(!error){
+            return res.json({
+                ok: true,
+                message: clienteEncontrado ? null : 'No se encontro el cliente a buscar',
+                content: clienteEncontrado
+            });
+        }else{
+            return res.status(500).json({
+                ok: false,
+                message: 'Hubo un error al buscar el cliente',
+                content: error
+            });
+        }
+    })
+}
 
 module.exports = {
-    crearCliente
+    crearCliente,
+    buscarClientePorDni
 }
