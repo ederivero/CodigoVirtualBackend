@@ -1,6 +1,6 @@
-const productoSchema = require('../models/producto');
-const clienteSchema = require('../models/cliente');
-const ventaSchema = require('../models/venta');
+const {productoSchema} = require('../models/producto');
+const {clienteSchema} = require('../models/cliente');
+const {ventaSchema} = require('../models/venta');
 
 const {model} = require('mongoose');
 

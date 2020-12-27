@@ -1,7 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-
+const producto_router = require('../routes/producto');
 class Server {
     constructor(){
         this.app = express();
@@ -29,6 +29,7 @@ class Server {
                 message:'La API Funciona! 😊🎃😎🎉'
             });
         });
+        this.app.use('',producto_router);
     }    
     start(){
         this.app.listen(this.puerto,()=>{

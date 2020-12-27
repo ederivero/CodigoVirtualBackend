@@ -3,18 +3,22 @@ const Schema = require('mongoose').Schema;
 var productoSchema = new Schema({
     productoPrecio: {
         type: Number,
-        min: 0
+        min: 0,
+        required: true
     },
     productoTitulo:{
         type: String,
-        unique: true
+        unique: true,
+        required: true
     },
     productoCantidad: {
-        type: Number
+        type: Number,
+        required: true
     },
     productoMoneda: {
         type: String,
-        maxlength: 3
+        maxlength: 3,
+        required: true
     },
     productoImagen : {
         type: String
@@ -22,7 +26,8 @@ var productoSchema = new Schema({
     productoDescripcion: {
         type: String,
         maxlength: 100,
-        minlength: 30
+        minlength: 30,
+        required: true
     }
 }, { timestamps: true });
 
