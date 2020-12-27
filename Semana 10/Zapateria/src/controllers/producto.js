@@ -26,6 +26,8 @@ const crearProducto = (req, res)=>{
         }
     })
 }
+// hacer un controlador y su ruta para devolver todos los productos ingresados
+
 module.exports = {
     crearProducto: crearProducto
 }
