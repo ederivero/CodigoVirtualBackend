@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const producto_router = require('../routes/producto');
 const rutas_cliente = require('../routes/cliente');
+const venta_router = require('../routes/venta');
 class Server {
     constructor(){
         this.app = express();
@@ -30,7 +31,7 @@ class Server {
                 message:'La API Funciona! 😊🎃😎🎉'
             });
         });
-        this.app.use('',producto_router, rutas_cliente);
+        this.app.use('',producto_router, rutas_cliente, venta_router);
     }    
     start(){
         this.app.listen(this.puerto,()=>{

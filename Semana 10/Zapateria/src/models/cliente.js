@@ -23,7 +23,8 @@ var clienteSchema = new mongoose.Schema({
     cliDni: {
         type : String,
         maxlength: 10,
-        minlength: 8
+        minlength: 8,
+        unique: true
     }
 },{
     timestamps: true, // esto va a crear los timestamps por defecto osea el createdAt y el updatedAt pero si quisiese modificar esos nombres seria asi
