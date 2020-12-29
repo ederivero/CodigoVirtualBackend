@@ -1,7 +1,7 @@
 const {Producto, Venta, Cliente} = require('../config/Mongoose');
 const mercadopago = require('../config/MercadoPago');
 // crear la preferencia de mercado pago
-let preferencias = {
+let preferencia = {
     payment_methods : {
         installments: 6,
         // https://api.mercadopago.com/v1/payment_methods => tengo que mandar como header la token en Authorization
@@ -23,18 +23,17 @@ let preferencias = {
         pending: 'http://ederivero-mp-ecommerce-nodejs.herokuapp.com/pending'
     },
     // sirve para que mercado pago nos mande actualizaciones de nuestro pago online, solamente funciona con dominios publicos (no funciona con localhost o 127.0.0.1)
-    notification_urls: 'http://pasarela'
+    notification_url: 'https://pagos-mongoose-eduardo.herokuapp.com/notificaciones'
 }
+
 const preferenciaMercadoPago = async(req, res)=>{
     // tengo que ver los productos id's y buscarlos en la colecion de producto
     let {productos, clienteId} = req.body;
     let items = [];
     // buscar el cliente y rellenar con los datos de ese cliente el payer y si no existe el cliente indicar que no existe
     // si quiero esperar una promesa con el await lo mas recomanble es trabajar con un try-catch puesto que al no recibir el catch y si hay algun error, no sabremos como tratarlo
-    console.log(clienteId);
     try {
         let cliente = await Cliente.findById(clienteId);
-        console.log(cliente);
         if(!cliente){
             return res.status(404).json({
                 ok:false,
@@ -42,12 +41,12 @@ const preferenciaMercadoPago = async(req, res)=>{
                 message:'Cliente no encontrado'
             })
         }
-        let payer = {
+        var payer = {
             name: cliente.cliNom,
             surname: cliente.cliApe,
             email: "test_user_46542185@testuser.com", // necesitamos este correo porque es el unico que funciona con la token de prueba, una vez que tengamos otra token habilitada normal podremos usar el correo que quisieramos
             phone: {
-                number: cliente.cliFono[0].fono_numero,
+                number: +cliente.cliFono[0].fono_numero,
                 area_code: cliente.cliFono[0].fono_area
             },
             identification:{
@@ -55,9 +54,9 @@ const preferenciaMercadoPago = async(req, res)=>{
                 number:cliente.cliDni
             },
             address:{
-                zip_code:cliente.cliAddres.zip_code,
-                street_name : cliente.cliAddres.street_name,
-                street_number: cliente.cliAddres.street_number
+                zip_code:cliente.cliAddress.zip_code,
+                street_name : cliente.cliAddress.street_name,
+                street_number: cliente.cliAddress.street_number
             }
         }
         // si el cliente existe
@@ -84,14 +83,16 @@ const preferenciaMercadoPago = async(req, res)=>{
             console.log(error)
         }
     }
+    preferencia.payer = payer;
+    preferencia.items = items;
+    let resMercadoPago = await mercadopago.preferences.create(preferencia);
+    res.json(resMercadoPago.body);
     // console.log(items);
     // tengo que ver el cliente id y buscarlo
     // OPCIONALMENTE: restringir algunos metodos de pago, cuotas de pago, formas de pago, etc...
     // configurar las url's de respuesta (back_urls)
     // configurar la url para recibir las notificaciones de mercado pago
 
-
-    res.send('ok')
 }
 // crear venta
 
