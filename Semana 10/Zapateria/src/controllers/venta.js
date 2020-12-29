@@ -1,4 +1,4 @@
-const {Producto, Venta, Cliente} = require('../config/Mongoose');
+const {Producto, Venta, Cliente, Pasarela} = require('../config/Mongoose');
 const mercadopago = require('../config/MercadoPago');
 // crear la preferencia de mercado pago
 let preferencia = {
@@ -23,7 +23,11 @@ let preferencia = {
         pending: 'http://ederivero-mp-ecommerce-nodejs.herokuapp.com/pending'
     },
     // sirve para que mercado pago nos mande actualizaciones de nuestro pago online, solamente funciona con dominios publicos (no funciona con localhost o 127.0.0.1)
-    notification_url: 'https://pagos-mongoose-eduardo.herokuapp.com/notificaciones'
+    notification_url: 'https://pagos-mongoose-eduardo.herokuapp.com/notificaciones',
+    // sirve para mandarnos informacion del pago a nuestro correo
+    external_reference: 'ederiveroman@gmail.com',
+    // si lo declaramos hara que, una vez realizada la compra, nos redireccionará al endpoint declarado en las back_urls.sucess
+    auto_return:'approved'
 }
 
 const preferenciaMercadoPago = async(req, res)=>{
@@ -86,13 +90,26 @@ const preferenciaMercadoPago = async(req, res)=>{
     preferencia.payer = payer;
     preferencia.items = items;
     let resMercadoPago = await mercadopago.preferences.create(preferencia);
-    res.json(resMercadoPago.body);
-    // console.log(items);
-    // tengo que ver el cliente id y buscarlo
-    // OPCIONALMENTE: restringir algunos metodos de pago, cuotas de pago, formas de pago, etc...
-    // configurar las url's de respuesta (back_urls)
-    // configurar la url para recibir las notificaciones de mercado pago
 
+    let idPago = resMercadoPago.body.id;
+    let idCollector = resMercadoPago.body.collector_id;
+    // ingresar el idPago, idCollector y clienteID en la coleccion (tabla) Pasarela, pasar todo su codigo e importaciones si fuese necesario usando async y await.
+    await Pasarela.create({
+        idPago: idPago,
+        idCollector: idCollector,
+        clienteId: clienteId
+    });
+    return res.json({
+        ok: true,
+        content: resMercadoPago.body.init_point,
+        message: null
+    });
+}
+const recibirNotificaciones= (req,res)=>{
+    // https://www.mercadopago.com.ar/developers/es/guides/notifications/ipn
+    console.log(req.body);
+    console.log(req.query);
+    res.status(201).send('Recibido')
 }
 // crear venta
 
@@ -101,5 +118,6 @@ const preferenciaMercadoPago = async(req, res)=>{
 // notificaciones de mercado pago de una venta en especifico
 
 module.exports = {
-    preferenciaMercadoPago
+    preferenciaMercadoPago,
+    recibirNotificaciones
 }
