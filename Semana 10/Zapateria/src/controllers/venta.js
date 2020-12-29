@@ -3,9 +3,26 @@ const mercadopago = require('../config/MercadoPago');
 // crear la preferencia de mercado pago
 const preferenciaMercadoPago = async(req, res)=>{
     // tengo que ver los productos id's y buscarlos en la colecion de producto
-    let {productos} = req.body;
+    let {productos, clienteId} = req.body;
     let items = [];
     // buscar el cliente y rellenar con los datos de ese cliente el payer y si no existe el cliente indicar que no existe
+    // si quiero esperar una promesa con el await lo mas recomanble es trabajar con un try-catch puesto que al no recibir el catch y si hay algun error, no sabremos como tratarlo
+    console.log(clienteId);
+    try {
+        let cliente = await Cliente.findById(clienteId);
+        console.log(cliente);
+        if(!cliente){
+            return res.status(404).json({
+                ok:false,
+                content:null,
+                message:'Cliente no encontrado'
+            })
+        }
+        // si el cliente existe
+        
+    } catch (error) {
+        console.log(error)
+    }
     let payer = {
         name:"Lalo",
         surname: "Landa",
@@ -25,7 +42,7 @@ const preferenciaMercadoPago = async(req, res)=>{
         }
       }
     for (const key in productos) {
-        console.log(productos[key]);
+        // console.log(productos[key]);
         try {
             let producto = await Producto.findById(productos[key].productoId);
             let item = {
@@ -43,7 +60,7 @@ const preferenciaMercadoPago = async(req, res)=>{
             console.log(error)
         }
     }
-    console.log(items);
+    // console.log(items);
     // tengo que ver el cliente id y buscarlo
     // OPCIONALMENTE: restringir algunos metodos de pago, cuotas de pago, formas de pago, etc...
     // configurar las url's de respuesta (back_urls)
