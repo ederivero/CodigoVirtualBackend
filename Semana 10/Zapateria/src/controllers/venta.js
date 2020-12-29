@@ -1,6 +1,30 @@
 const {Producto, Venta, Cliente} = require('../config/Mongoose');
 const mercadopago = require('../config/MercadoPago');
 // crear la preferencia de mercado pago
+let preferencias = {
+    payment_methods : {
+        installments: 6,
+        // https://api.mercadopago.com/v1/payment_methods => tengo que mandar como header la token en Authorization
+        excluded_payment_methods: [
+            {
+                id:"diners"
+            }
+        ],
+        excluded_payment_types: [
+            {
+                id: "atm"
+            }
+        ]
+    },
+    // sirve para indicar que si el pago se realizó correctamente o hubo un error o esta pendiente de pago (hará una redirección automatica)
+    back_urls:{
+        success: 'http://ederivero-mp-ecommerce-nodejs.herokuapp.com/success',
+        failure: 'http://ederivero-mp-ecommerce-nodejs.herokuapp.com/failure',
+        pending: 'http://ederivero-mp-ecommerce-nodejs.herokuapp.com/pending'
+    },
+    // sirve para que mercado pago nos mande actualizaciones de nuestro pago online, solamente funciona con dominios publicos (no funciona con localhost o 127.0.0.1)
+    notification_urls: 'http://pasarela'
+}
 const preferenciaMercadoPago = async(req, res)=>{
     // tengo que ver los productos id's y buscarlos en la colecion de producto
     let {productos, clienteId} = req.body;
@@ -18,29 +42,29 @@ const preferenciaMercadoPago = async(req, res)=>{
                 message:'Cliente no encontrado'
             })
         }
+        let payer = {
+            name: cliente.cliNom,
+            surname: cliente.cliApe,
+            email: "test_user_46542185@testuser.com", // necesitamos este correo porque es el unico que funciona con la token de prueba, una vez que tengamos otra token habilitada normal podremos usar el correo que quisieramos
+            phone: {
+                number: cliente.cliFono[0].fono_numero,
+                area_code: cliente.cliFono[0].fono_area
+            },
+            identification:{
+                type:"dni",
+                number:cliente.cliDni
+            },
+            address:{
+                zip_code:cliente.cliAddres.zip_code,
+                street_name : cliente.cliAddres.street_name,
+                street_number: cliente.cliAddres.street_number
+            }
+        }
         // si el cliente existe
-        
+
     } catch (error) {
         console.log(error)
     }
-    let payer = {
-        name:"Lalo",
-        surname: "Landa",
-        email:"test_user_46542185@testuser.com", // el email tiene que ser este
-        phone:{
-            number:5549737300,
-            area_code:"52"
-        },
-        identification:{
-            type:"dni",
-            number:"22334445"
-        },
-        address:{
-            zip_code : "03940",
-            street_name:"Insurgentes Sur",
-            street_number:1602,
-        }
-      }
     for (const key in productos) {
         // console.log(productos[key]);
         try {

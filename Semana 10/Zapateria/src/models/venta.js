@@ -1,5 +1,16 @@
 const Schema = require('mongoose').Schema;
 
+const productosSchema = new Schema({
+    ventaProductoId: {
+        type: String,
+        required: true
+    },
+    ventaProductoCantidad: {
+        type: Number,
+        required:true
+    }
+})
+
 const ventaSchema = new Schema({
     ventaFecha: {
         type: Date,
@@ -9,10 +20,9 @@ const ventaSchema = new Schema({
         type: Number,
         required: true
     },
-    ventaProductoId: {
-        type: String,
-        required: true
-    },
+    ventaProductos: [
+        productosSchema
+    ],
     ventaClienteId: {
         type: String,
         required: true
